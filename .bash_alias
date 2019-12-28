@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $BASH_VERSION
 
 export PS1="\w>"
 export CDPATH=$CDPATH:~/code:~/jetty-distribution-9.4.0.v20161208/webapps
@@ -18,6 +19,8 @@ alias pd="popd"
 alias ll="ls -lF"
 alias lld="ls -alF"
 alias df="df -BG"
+alias dirs="ll -d */"
+alias xc="xclip -selection c"
 
 alias cd..="cd .."
 alias ..="cd .."
@@ -34,6 +37,7 @@ alias myip="curl ipinfo.io"
 
 function g() {
   A=$1
+  B=$2
 
   if [ "${A}" = "doc" ]
   then
@@ -55,6 +59,12 @@ function g() {
 
   if [ "${A}" = "code" ]
   then
+    if [ "${B}" = "bdwp" ]
+    then
+      cd ~/code/bartell/BartellWordpress/wp-content/themes/btd
+      return
+    fi
+
     cd ~/code
     return
   fi
