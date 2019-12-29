@@ -26,3 +26,9 @@ exit #disconnect
 
 ssh dwroth@[public ip] -i .ssh/[private key filename]
 #if error about private key being too accessible, lock it down with 'sudo chmod 600 [private key filename]'
+
+#explore a bit
+cat /etc/*release
+hostname ctl
+df -h #show free space
+
