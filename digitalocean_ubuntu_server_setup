@@ -1,0 +1,28 @@
+#connect to instance
+ssh root@[public ip] -i .ssh/[private key filename]
+
+curl https://raw.githubusercontent.com/dw-roth/dotfiles/master/digitalocean_ubuntu_server_setup -o setup #download this file
+curl https://raw.githubusercontent.com/dw-roth/dotfiles/master/ubuntu_bash_alias -o .bash_aliases #download digitalocean ubuntu aliases file
+source .bash_aliases
+tmux
+apt update #update and upgrade to get latest security updates
+apt upgrade
+apt autoremove #cleanup
+ufw allow 22/tcp #enable firewall for port 22
+ufw enable
+apt install fail2ban #track unauthorized login attempts
+adduser dwroth #create a non-root user
+usermod -aG sudo dwroth #give this user admin capabilities
+su dwroth #change to that user
+mkdir .ssh && cd $_ #make a .ssh dir
+vim authorized_keys #copy public key to this file
+exit #drop back to root
+vim /etc/ssh/sshd_config #set PermitRootLogin to no, uncomment PubkeyAuthentication and ensure set to yes. ensure PasswordAuthentication set to no
+systemctl restart ssh #restart ssh deamon
+systemctl restart sshd
+exit #disconnect
+
+#reconnect with new user just created
+
+ssh dwroth@[public ip] -i .ssh/[private key filename]
+#if error about private key being too accessible, lock it down with 'sudo chmod 600 [private key filename]'
