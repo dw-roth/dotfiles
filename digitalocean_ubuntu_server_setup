@@ -32,3 +32,9 @@ cat /etc/*release
 hostname ctl
 df -h #show free space
 
+#if you want to use node:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash #use nvm to install node
+$ . ~/.nvm/nvm.sh #make sure nvm is available
+$ nvm install node #install node via nvm
+
+
