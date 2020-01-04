@@ -1,0 +1,60 @@
+[ Connect to instance. This example I created a new ubuntu instance on Digital Ocean with name 'dwroth-ununtu' using private key digitalocean_key ]
+
+~> ssh root@[public ip] -i ~/.ssh/digitalocean_key
+
+[1. Update system]
+root@dwroth-ubuntu:~# apt update 
+root@dwroth-ubuntu:~# apt upgrade
+root@dwroth-ubuntu:~# apt autoremove
+
+[ Keep local version of /boot/grub/menu.1st if asked ]
+
+[2. enable firewall for port 22]
+root@dwroth-ubuntu:~# ufw allow 22/tcp 
+root@dwroth-ubuntu:~# ufw enable
+
+[3. Add fail2ban to track unauthorized login attempts]
+root@dwroth-ubuntu:~# apt install fail2ban    [ track unauthorized login attempts]
+
+[4. Add new non-root user with root capabilities. In the case, user is 'dwroth' ]
+root@dwroth-ubuntu:~# adduser dwroth 
+[ when prompted, give user password as you'll need for sudo elevations ]
+root@dwroth-ubuntu:~# usermod -aG sudo dwroth 
+root@dwroth-ubuntu:~# su dwroth 
+dwroth@dwroth-ubuntu:/root$ cd                [ get to new user home folder]
+dwroth@dwroth-ubuntu:~$ mkdir .ssh && cd $_
+dwroth@dwroth-ubuntu:~$ 
+
+[4a. copy public ssh key to authorized_keys file]
+dwroth@dwroth-ubuntu:~$ echo [paste public ssh key to command line] > authorized_keys
+dwroth@dwroth-ubuntu:~$ cat authorized_keys   [ ensure key if properly in file ]
+dwroth@dwroth-ubuntu:~$ exit                  [ drop back to root]
+
+[5. change login/auth rules]
+root@dwroth-ubuntu:~# vim /etc/ssh/sshd_config 
+> [set PermitRootLogin to no]
+> [uncomment PubkeyAuthentication and ensure set to yes]
+> [ensure PasswordAuthentication set to no]
+
+[ 6. restart ssh deamon, exit, and reconnect with new user]
+root@dwroth-ubuntu:~# systemctl restart ssh 
+root@dwroth-ubuntu:~# exit 
+~> ssh dwroth@[public ip] -i .ssh/digitalocean_key
+
+[ if error about private key being too accessible, lock it down with following command: ]
+> sudo chmod 600 [private key filename]
+
+[ get my .bash_aliases file from github ]
+dwroth@dwroth-ubuntu:~$ curl https://raw.githubusercontent.com/dw-roth/dotfiles/master/.bash_aliases -o .bash_aliases
+
+[ some commands to get overview of system ]
+dwroth@dwroth-ubuntu:~$ df -h                   [ show free disk space ]
+dwroth@dwroth-ubuntu:~$ cat /etc/*release       [ get system description ]
+
+[ to install node via nvm ]
+dwroth@dwroth-ubuntu:~$ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash 
+dwroth@dwroth-ubuntu:~$ . ~/.nvm/nvm.sh 
+dwroth@dwroth-ubuntu:~$ nvm install node 
+dwroth@dwroth-ubuntu:~$ nvm list
+
+
